@@ -7,7 +7,7 @@ project(sensor_velodyne3d)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED roscpp)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -113,7 +113,15 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
 # include
-# ${catkin_INCLUDE_DIRS}
+ ${catkin_INCLUDE_DIRS}
+ #${PROJECT_SOURCE_DIR}/src
+ $ENV{OBVIOUSLY_ROOT}
+)
+
+link_directories(
+  $ENV{OBVIOUSLY_ROOT}/build/release/obcore
+  #$ENV{OBVIOUSLY_ROOT}/build/release/obgraphic
+  $ENV{OBVIOUSLY_ROOT}/build/release/obvision
 )
 
 ## Declare a C++ library
@@ -129,7 +137,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/sensor_velodyne3d_node.cpp)
+ add_executable(velodyne3d_node src/velodyne3d_ros_wrapper.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -142,9 +150,13 @@ include_directories(
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(${PROJECT_NAME}_node
-#   ${catkin_LIBRARIES}
-# )
+ target_link_libraries(velodyne3d_node
+   ${catkin_LIBRARIES}
+   obvision
+   obcore
+   gsl
+   gslcblas
+ )
 
 #############
 ## Install ##
