@@ -1,13 +1,18 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(sensor_velodyne3d)
 
+set(CMAKE_BUILD_TYPE Debug)
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+ add_compile_options(-std=c++17)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED roscpp)
+find_package(catkin REQUIRED COMPONENTS
+roscpp 
+pcl_ros 
+sensor_msgs
+)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -114,16 +119,22 @@ catkin_package(
 include_directories(
 # include
  ${catkin_INCLUDE_DIRS}
- #${PROJECT_SOURCE_DIR}/src
+ ${PROJECT_SOURCE_DIR}/src
  $ENV{OBVIOUSLY_ROOT}
 )
 
-link_directories(
-  $ENV{OBVIOUSLY_ROOT}/build/release/obcore
-  #$ENV{OBVIOUSLY_ROOT}/build/release/obgraphic
-  $ENV{OBVIOUSLY_ROOT}/build/release/obvision
-)
+#link_directories(
+#  $ENV{OBVIOUSLY_ROOT}/build/release/obcore
+#  $ENV{OBVIOUSLY_ROOT}/build/release/obgraphic
+#  $ENV{OBVIOUSLY_ROOT}/build/release/obvision
+#)
 
+
+link_directories(
+  $ENV{OBVIOUSLY_ROOT}/build/debug/obcore
+  $ENV{OBVIOUSLY_ROOT}/build/debug/obgraphic
+  $ENV{OBVIOUSLY_ROOT}/build/debug/obvision
+)
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/sensor_velodyne3d.cpp
@@ -156,6 +167,7 @@ link_directories(
    obcore
    gsl
    gslcblas
+   gomp
  )
 
 #############
