@@ -292,25 +292,25 @@ void velodyneCallback(const pcl::PointCloud<pcl::PointXYZ>& cloud)
   sensor->setRealMeasurementData(depthData.data());
 
   // only one push with first pointcloud
-  if(!firstPointcloudIn)
-  {
-    space->push(sensor);
-    firstPointcloudIn = true;
-  }
-  else
-  {
-    std::cout << "lalala" << std::endl;
-  }
+  // if(!firstPointcloudIn)
+  // {
+  space->push(sensor);
+  //   firstPointcloudIn = true;
+  // }
+  // else
+  // {
+  //   std::cout << "lalala" << std::endl;
+  // }
 
-  pullOutCloud();
+  // AXIS PARALLEL RAYCASTER
+  // pullOutCloud();
+  // RENDER SPACE - PHILS METHOD - red blue
+  // pcl::PointCloud<pcl::PointXYZRGB> renderedSpace;
+  // renderSpace(renderedSpace);
+  // pubRenderedSpace.publish(renderedSpace);
 
-  pcl::PointCloud<pcl::PointXYZRGB> renderedSpace;
-  renderSpace(renderedSpace);
-  pubRenderedSpace.publish(renderedSpace);
-  pcl::PointCloud<pcl::PointXYZ> sensorRaycastedSpace;
-  // pubSensorCast(sensorRaycastedSpace);
+  // SENSORVELODYNE3D RAYCASTER
   pubSensorCast();
-  // pubSensorRaycast.publish(sensorRaycastedSpace);
 }
 
 int main(int argc, char** argv)
