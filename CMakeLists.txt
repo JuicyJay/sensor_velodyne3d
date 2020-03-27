@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
 roscpp 
 pcl_ros 
 sensor_msgs
+dynamic_reconfigure
 )
 
 ## System dependencies are found with CMake's conventions
@@ -93,10 +94,9 @@ sensor_msgs
 ##     and list every .cfg file to be processed
 
 ## Generate dynamic reconfigure parameters in the 'cfg' folder
-# generate_dynamic_reconfigure_options(
-#   cfg/DynReconf1.cfg
-#   cfg/DynReconf2.cfg
-# )
+ generate_dynamic_reconfigure_options(
+   cfg/VelodyneTsdReconfigure.cfg
+ )
 
 ###################################
 ## catkin specific configuration ##
@@ -155,6 +155,10 @@ link_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
  add_executable(velodyne3d_node src/velodyne3d_ros_wrapper.cpp)
+ 
+ add_executable(velodyneTsd_node  src/VelodyneTsd.cpp
+                                  src/main.cpp
+                                  src/Registration.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -166,6 +170,8 @@ link_directories(
 ## same as for the library above
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
+add_dependencies(velodyneTsd_node ${PROJECT_NAME}_gencfg)
+
 ## Specify libraries to link a library or executable target against
  target_link_libraries(velodyne3d_node
    ${catkin_LIBRARIES}
@@ -175,6 +181,15 @@ link_directories(
    gslcblas
    gomp
  )
+
+ target_link_libraries(velodyneTsd_node
+ ${catkin_LIBRARIES}
+ obvision
+ obcore
+ gsl
+ gslcblas
+ gomp
+)
 
 #############
 ## Install ##
