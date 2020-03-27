@@ -96,8 +96,22 @@ void pubSensorCast(void)
   }
   cloud.header.frame_id = "map";
   cloud.header.seq      = seq++;
-  pubSensorRaycast.publish(cloud); //--> pub in subscriber velo
-  std::cout << "eee " << std::endl;
+
+  // pubSensorRaycast.publish(cloud); //--> pub in subscriber velo
+
+  // transform cloud
+  float           theta       = M_PI;
+  Eigen::Affine3f transform_2 = Eigen::Affine3f::Identity();
+  // Define a translation of 0.0 meters. - necessary?
+  transform_2.translation() << 0.0, 0.0, 0.0;
+  // The same rotation matrix as before; theta radians around Z axis
+  transform_2.rotate(Eigen::AngleAxisf(theta, Eigen::Vector3f::UnitX()));
+
+  // pcl::Pointcloud<pcl::PointXYZ>::Ptr transformedCloud(new pcl::PointCloud<pcl::PointXYZ>());
+  pcl::PointCloud<pcl::PointXYZ>::Ptr transformedCloud(new pcl::PointCloud<pcl::PointXYZ>());
+  pcl::transformPointCloud(cloud, *transformedCloud, transform_2);
+  pubSensorRaycast.publish(transformedCloud);
+
   std::cout << __PRETTY_FUNCTION__ << "cloud.width = " << cloud.width << std::endl;
   std::cout << __PRETTY_FUNCTION__ << "cloud.height = " << cloud.height << std::endl;
   std::cout << __PRETTY_FUNCTION__ << "cloud.points.size() = " << cloud.points.size() << std::endl;
@@ -115,11 +129,11 @@ void renderSpace(pcl::PointCloud<pcl::PointXYZRGB>& cloud)
   {
     Color(uint8_t r, uint8_t g, uint8_t b) : r(r), g(g), b(b) {}
     Color() : r(0), g(0), b(0) {}
-    void red(uint8_t val) { r = val; }
-    void blue(uint8_t val) { b = val; }
-    uint8_t           r;
-    uint8_t           g;
-    uint8_t           b;
+    void    red(uint8_t val) { r = val; }
+    void    blue(uint8_t val) { b = val; }
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
   };
 
   obvious::Matrix*   cellCoordsHom = obvious::TsdSpacePartition::getCellCoordsHom();
@@ -304,11 +318,11 @@ void velodyneCallback(const pcl::PointCloud<pcl::PointXYZ>& cloud)
   // }
 
   // AXIS PARALLEL RAYCASTER
-  // pullOutCloud();
+  pullOutCloud();
   // RENDER SPACE - PHILS METHOD - red blue
-  // pcl::PointCloud<pcl::PointXYZRGB> renderedSpace;
-  // renderSpace(renderedSpace);
-  // pubRenderedSpace.publish(renderedSpace);
+  pcl::PointCloud<pcl::PointXYZRGB> renderedSpace;
+  renderSpace(renderedSpace);
+  pubRenderedSpace.publish(renderedSpace);
 
   // SENSORVELODYNE3D RAYCASTER
   pubSensorCast();
