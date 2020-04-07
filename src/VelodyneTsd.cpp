@@ -8,6 +8,7 @@
 #include "VelodyneTsd.h"
 #include "Registration.h"
 #include "obcore/math/mathbase.h"
+#include <pcl/io/ply_io.h>
 #include <pcl_ros/transforms.h>
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
@@ -126,6 +127,10 @@ void VelodyneTsd::callbackPointCloud(const pcl::PointCloud<pcl::PointXYZ>& cloud
                                                               center[2] + tfSensor.getOrigin().getZ());
     // TRANSFORM SENSOR
     _sensor->setTransformation(TransMat);
+
+    std::cout << __PRETTY_FUNCTION__ << "Current Transformation after sensor transform with tf: " << std::endl;
+    obvious::Matrix TransCheck = _sensor->getTransformation();
+    TransCheck.print();
 
     // extract data from pointcloud and write it to depthData
     std::vector<double> depthData(cloud.height * cloud.width, 0.0);
