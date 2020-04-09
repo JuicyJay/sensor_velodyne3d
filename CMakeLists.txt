@@ -154,7 +154,7 @@ link_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
- add_executable(velodyne3d_node src/velodyne3d_ros_wrapper.cpp)
+ #add_executable(velodyne3d_node src/velodyne3d_ros_wrapper.cpp)
  
  add_executable(velodyneTsd_node  src/VelodyneTsd.cpp
                                   src/main.cpp
@@ -173,14 +173,14 @@ link_directories(
 add_dependencies(velodyneTsd_node ${PROJECT_NAME}_gencfg)
 
 ## Specify libraries to link a library or executable target against
- target_link_libraries(velodyne3d_node
-   ${catkin_LIBRARIES}
-   obvision
-   obcore
-   gsl
-   gslcblas
-   gomp
- )
+ #target_link_libraries(velodyne3d_node
+  # ${catkin_LIBRARIES}
+   #obvision
+   #obcore
+   #gsl
+  # gslcblas
+  # gomp
+# )
 
  target_link_libraries(velodyneTsd_node
  ${catkin_LIBRARIES}

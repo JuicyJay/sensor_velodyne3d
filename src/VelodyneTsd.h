@@ -46,6 +46,9 @@ private:
   unsigned int                           _cellsY;
   unsigned int                           _cellsZ;
   bool                                   _virginPush;
+  // for shift down test
+  obvious::obfloat _centerspace[3];
+  obvious::obfloat _zCoord;
 
   dynamic_reconfigure::Server<sensor_velodyne3d::VelodyneTsdReconfigureConfig>               _serverReconf;
   dynamic_reconfigure::Server<sensor_velodyne3d::VelodyneTsdReconfigureConfig>::CallbackType _callBackConfig;

@@ -73,6 +73,10 @@ void VelodyneTsd::init(const pcl::PointCloud<pcl::PointXYZ>& cloud)
   cout << "Initial Pose - sensor set to the middle of tsd space in init: " << endl;
   obvious::Matrix Tmp = _sensor->getTransformation();
   Tmp.print();
+
+  // for shift down test
+  // _space->getCentroid(_centerspace);
+  // _zCoord = _centerspace[2];
 }
 void VelodyneTsd::callbackDynReconf(sensor_velodyne3d::VelodyneTsdReconfigureConfig& config, uint32_t level)
 {
@@ -102,8 +106,6 @@ void VelodyneTsd::callbackPointCloud(const pcl::PointCloud<pcl::PointXYZ>& cloud
   {
     std::cout << __PRETTY_FUNCTION__ << "virgin push, first point cloud in" << std::endl;
 
-    // wozu das? t wird nicht mehr verwendet oder
-    // Eigen::Vector3f t(tfSensor.getOrigin().getX(), tfSensor.getOrigin().getY(), tfSensor.getOrigin().getZ());
     tf::Quaternion quat  = tfSensor.getRotation();
     double         roll  = 0.0;
     double         pitch = 0.0;
@@ -114,12 +116,10 @@ void VelodyneTsd::callbackPointCloud(const pcl::PointCloud<pcl::PointXYZ>& cloud
 
     obvious::Matrix TransMat(4, 4);
     TransMat.setIdentity();
-    // wozu bruach ich das? --> um aktuelle tfSensor translation draufzuaddieren
     obvious::obfloat center[3];
     _space->getCentroid(center);
     tf::Vector3 tfVec = tfSensor.getOrigin();
-    // check if tfSensor.getOrigin().getX() or tfVec.getX() and tfSensor or tfVec !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // ALLES MAL AUSGEBEN LASSEN WAS DA DRIN STEHT - dasselbe nach dem hier oder? tf::Vector3 tfVec = tfSensor.getOrigin();
+
     std::cout << "tfVec.getX() = " << tfVec.getX() << " tfVec.getY() = " << tfVec.getY() << " tfVec.getZ() = " << tfVec.getX() << std::endl;
     std::cout << "tfSensor.getOrigin().getX() = " << tfSensor.getOrigin().getX() << " tfSensor.getOrigin().getY() = " << tfSensor.getOrigin().getY()
               << " tfSensor.getOrigin().getZ() = " << tfSensor.getOrigin().getZ() << std::endl;
@@ -167,13 +167,35 @@ void VelodyneTsd::callbackPointCloud(const pcl::PointCloud<pcl::PointXYZ>& cloud
   }
   else
   {
+    // NACH UNTEN VERSCHIEBEN Test
+    // _zCoord -= 0.3;
+    // if(_zCoord < 0.0)
+    // {
+    //   return;
+    // }
+    // obvious::Matrix TransMatShift(4, 4);
+    // TransMatShift.setIdentity();
+
+    // TransMatShift = obvious::MatrixFactory::TransformationMatrix44(0.0, 0.0, 0.0, _centerspace[0], _centerspace[1], _zCoord);
+    // // TRANSFORM SENSOR
+    // _sensor->setTransformation(TransMatShift);
+
+    // std::cout << __PRETTY_FUNCTION__ << "Current Transformation after downshift: " << std::endl;
+    // obvious::Matrix TransCheckShift = _sensor->getTransformation();
+    // TransCheckShift.print();
+
+    // std::cout << __PRETTY_FUNCTION__ << "virgin push over, sensor shifted down by z=-0.3m, continue with raycast" << std::endl;
+    // // CONTINUE WITH RAYCAST HERE
+    // this->pubSensorRaycast(cloud);
+
+    // REGISTRATION TEST
     std::cout << __PRETTY_FUNCTION__ << "virgin push over, continue with registration" << std::endl;
     // CONTINUE WITH RAYCAST HERE
     this->pubSensorRaycast(cloud);
   }
 }
 
-// raycast liefert model aus letztem und allen vorausgegangenen pushs
+// raycast liefert model aus dem aktuellen blinkwinkel der sensorpose aus dem letzten und allen vorausgegangenen pushs
 // scene wird mit currentLaserData weitergereicht
 void VelodyneTsd::pubSensorRaycast(const pcl::PointCloud<pcl::PointXYZ>& currentLaserSceneData)
 {
@@ -197,8 +219,6 @@ void VelodyneTsd::pubSensorRaycast(const pcl::PointCloud<pcl::PointXYZ>& current
   obvious::obfloat               tr[3];
   _space->getCentroid(tr);
 
-  // WAS MACH ICH HIER MIT tr ????????????????????????????????????????????????????????????????????????????????????????????????
-  // muss ich hier nicht auch die letzte pose mit einrechnen udn nicht die mitte getCentroid?
   for(unsigned int i = 0; i < size; i += 3)
   {
     pcl::PointXYZ p;
@@ -212,7 +232,7 @@ void VelodyneTsd::pubSensorRaycast(const pcl::PointCloud<pcl::PointXYZ>& current
   lastRaycastModelData.header.seq      = seq++;
   _pubSensorRaycast.publish(lastRaycastModelData);
 
-  this->matchScanToSpace(currentLaserSceneData, lastRaycastModelData);
+  // this->matchScanToSpace(currentLaserSceneData, lastRaycastModelData);
 }
 
 // MODEL = raycast from current point of view of sensor --in first iteration: data from virgin push
