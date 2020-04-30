@@ -16,13 +16,14 @@
 VelodyneTsd::VelodyneTsd(const float dimX, const float dimY, const float dimZ, const float cellSize)
     : _dimX(dimX), _dimY(dimY), _dimZ(dimZ), _cellSize(cellSize), _listener(std::make_unique<tf::TransformListener>()), _cellsX(0), _cellsY(0), _cellsZ(0)
 {
-  _subPointCloud    = _nh.subscribe("puck_rear/velodyne_points", 1, &VelodyneTsd::callbackPointCloud, this);
-  _tfBaseFrame      = "base_link";
+  _subPointCloud = _nh.subscribe("puck_rear/velodyne_points", 1, &VelodyneTsd::callbackPointCloud, this);
+  // _tfBaseFrame      = "base_link";
+  _tfBaseFrame = "map"; // changed to map for artificial box data from cloud_factory
+
   _raycaster        = new obvious::RayCast3D();
   _pubSensorRaycast = _nh.advertise<pcl::PointCloud<pcl::PointXYZ> >("sensorRaycast", 1);
   _virginPush       = false;
-
-  _callBackConfig = boost::bind(&VelodyneTsd::callbackDynReconf, this, _1, _2);
+  _callBackConfig   = boost::bind(&VelodyneTsd::callbackDynReconf, this, _1, _2);
   _serverReconf.setCallback(_callBackConfig);
 }
 
@@ -148,7 +149,8 @@ void VelodyneTsd::callbackPointCloud(const pcl::PointCloud<pcl::PointXYZ>& cloud
         if(abs > 0.0)
         {
           depthData[idx] = abs;
-          mask[idx]      = true;
+          // depthData[idx] = 1.0; // artificial data with uniform ray length -- wird ne Kugel
+          mask[idx] = true;
           valid++;
         }
       }
