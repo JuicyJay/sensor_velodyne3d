@@ -280,6 +280,7 @@ void pubOnePoint(void)
 
 void velodyneCallback(const pcl::PointCloud<pcl::PointXYZ>& cloud)
 {
+
   // static variable wird nur ein einziges mal initalisiert, also beim erneuten aufruf vom callback nicht wieder überschrieben hier oben
   static bool firstPointcloudIn = false;
   // IM CALLBACK ABFRAGEN OB SPACE SCHON INITIALISIERT IST --> INIT ROUTINE MACHEN
