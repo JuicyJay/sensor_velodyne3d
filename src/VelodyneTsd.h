@@ -9,6 +9,7 @@
 #define SRC_VELODYNETSD_H_
 
 #include "obvision/reconstruct/space/RayCast3D.h"
+#include "obvision/reconstruct/space/SensorPolar3DBase.h"
 #include "obvision/reconstruct/space/SensorVelodyne3D.h"
 #include "obvision/reconstruct/space/TsdSpace.h"
 #include "sensor_velodyne3d/VelodyneTsdReconfigureConfig.h"
@@ -29,8 +30,11 @@ public:
 private:
   void init(const pcl::PointCloud<pcl::PointXYZ>& cloud);
   void callbackDynReconf(sensor_velodyne3d::VelodyneTsdReconfigureConfig& config, uint32_t level);
-  std::unique_ptr<obvious::TsdSpace>         _space;
+  std::unique_ptr<obvious::TsdSpace> _space;
+
+  // Switch sensor class here
   std::unique_ptr<obvious::SensorVelodyne3D> _sensor;
+  // std::unique_ptr<obvious::SensorPolar3DBase> _sensor;
 
   obvious::RayCast3D*                    _raycaster;
   ros::NodeHandle                        _nh;
@@ -46,6 +50,7 @@ private:
   unsigned int                           _cellsY;
   unsigned int                           _cellsZ;
   bool                                   _virginPush;
+
   // for shift down test
   obvious::obfloat _centerspace[3];
   obvious::obfloat _zCoord;

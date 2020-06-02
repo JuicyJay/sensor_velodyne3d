@@ -65,11 +65,28 @@ void VelodyneTsd::init(const pcl::PointCloud<pcl::PointXYZ>& cloud)
   obvious::Matrix Tinit(4, 4);
   Tinit.setIdentity();
   Tinit.setData(tf);
+
+  std::cout << __PRETTY_FUNCTION__ << "aa" << std::endl;
+  // switch here if you want to use SensorVelodyne3D // SensorPolar3DBase
+  // SensorVelodyne3D
   unsigned int raysIncl = 16;
   double       inclMin  = obvious::deg2rad(-15.0);
   double       inclRes  = obvious::deg2rad(2.0);
   double       azimRes  = obvious::deg2rad(0.2);
   _sensor               = std::make_unique<obvious::SensorVelodyne3D>(raysIncl, inclMin, inclRes, azimRes, 100.0, 0.0, 20.0);
+
+  // SensorPolar3DBase
+  // double inclMin = obvious::deg2rad(-15.0);
+  // double inclMax = obvious::deg2rad(15.0);
+  // double inclRes = obvious::deg2rad(2.0);
+  // double azimMin = obvious::deg2rad(0.0);
+  // double azimMax = obvious::deg2rad(360.0);
+  // double azimRes = obvious::deg2rad(0.2);
+  // std::cout << __PRETTY_FUNCTION__ << "1234455" << std::endl;
+  // _sensor = std::make_unique<obvious::SensorPolar3DBase>(inclMin, inclMax, inclRes, azimMin, azimMax, azimRes, 100.0, 0.0, 20.0);
+
+  std::cout << __PRETTY_FUNCTION__ << "aabb" << std::endl;
+
   _sensor->setTransformation(Tinit);
   cout << "Initial Pose - sensor set to the middle of tsd space in init: " << endl;
   obvious::Matrix Tmp = _sensor->getTransformation();
@@ -162,9 +179,14 @@ void VelodyneTsd::callbackPointCloud(const pcl::PointCloud<pcl::PointXYZ>& cloud
     }
     std::cout << __PRETTY_FUNCTION__ << " pushing " << valid << " valid points" << std::endl;
     _sensor->setRealMeasurementData(depthData.data());
+    std::cout << __PRETTY_FUNCTION__ << "dddd" << std::endl;
     _sensor->setRealMeasurementMask(mask);
+    std::cout << __PRETTY_FUNCTION__ << "eee" << std::endl;
     delete mask;
+
     _space->push(_sensor.get());
+
+    std::cout << __PRETTY_FUNCTION__ << "fff" << std::endl;
     _virginPush = true;
   }
   else
@@ -224,10 +246,19 @@ void VelodyneTsd::pubSensorRaycast(const pcl::PointCloud<pcl::PointXYZ>& current
   for(unsigned int i = 0; i < size; i += 3)
   {
     pcl::PointXYZ p;
-    p.x = coords[i] - tr[0];
-    p.y = coords[i + 1] - tr[1];
-    p.z = coords[i + 2] - tr[2];
+
+    // x y z
+    // p.x = coords[i] - tr[0];
+    // p.y = coords[i + 1] - tr[1];
+    // p.z = coords[i + 2] - tr[2];
     // p.x = -p.x;
+
+    // x z y
+    p.x = coords[i] - tr[0];
+    p.z = coords[i + 1] - tr[1];
+    p.y = coords[i + 2] - tr[2];
+    p.x = -p.x;
+
     lastRaycastModelData.push_back(p);
   }
   lastRaycastModelData.header.frame_id = "map";

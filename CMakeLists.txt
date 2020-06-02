@@ -129,14 +129,14 @@ include_directories(
 
 ######################################################################################
 ## CHANGE IF IN DEBUG MODE############################################################
-# link_directories(
-#  $ENV{OBVIOUSLY_ROOT}/build/release/obcore
-#  $ENV{OBVIOUSLY_ROOT}/build/release/obgraphic
-#  $ENV{OBVIOUSLY_ROOT}/build/release/obvision
-# )
+ #link_directories(
+  #$ENV{OBVIOUSLY_ROOT}/build/release/obcore
+  #$ENV{OBVIOUSLY_ROOT}/build/release/obgraphic
+  #$ENV{OBVIOUSLY_ROOT}/build/release/obvision
+ #)
 
 link_directories(
-  $ENV{OBVIOUSLY_ROOT}/build/debug/obcore
+ $ENV{OBVIOUSLY_ROOT}/build/debug/obcore
   $ENV{OBVIOUSLY_ROOT}/build/debug/obgraphic
   $ENV{OBVIOUSLY_ROOT}/build/debug/obvision
 )
