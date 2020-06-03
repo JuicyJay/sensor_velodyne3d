@@ -182,12 +182,12 @@ void VelodyneTsd::callbackPointCloud(const pcl::PointCloud<pcl::PointXYZ>& cloud
     std::cout << __PRETTY_FUNCTION__ << "dddd" << std::endl;
     _sensor->setRealMeasurementMask(mask);
     std::cout << __PRETTY_FUNCTION__ << "eee" << std::endl;
-    delete mask;
 
     _space->push(_sensor.get());
 
     std::cout << __PRETTY_FUNCTION__ << "fff" << std::endl;
     _virginPush = true;
+    delete mask;
   }
   else
   {

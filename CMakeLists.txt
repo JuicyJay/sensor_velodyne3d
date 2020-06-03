@@ -7,7 +7,8 @@ project(sensor_velodyne3d)
 set(CMAKE_BUILD_TYPE Debug)
 # set(CMAKE_BUILD_TYPE Release)
 ## Compile as C++11, supported in ROS Kinetic and newer
- add_compile_options(-std=c++17 -O0)
+ #add_compile_options(-std=c++17 -O0)
+ add_compile_options(-std=c++17 -Wall)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
