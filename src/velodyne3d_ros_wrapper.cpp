@@ -9,6 +9,7 @@
 #include "obvision/reconstruct/space/RayCast3D.h"
 #include "obvision/reconstruct/space/RayCastAxisAligned3D.h"
 #include "obvision/reconstruct/space/SensorVelodyne3D.h"
+
 #include "obvision/reconstruct/space/TsdSpace.h"
 #include "obvision/registration/icp/assign/filter/OutOfBoundsFilter3D.h"
 #include <pcl/io/ply_io.h>

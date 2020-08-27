@@ -9,12 +9,13 @@
 #define SRC_VELODYNETSD_H_
 
 #include "obvision/reconstruct/space/RayCast3D.h"
-#include "obvision/reconstruct/space/SensorPolar3DBase.h"
+// #include "obvision/reconstruct/space/SensorPolar3DBase.h"
 #include "obvision/reconstruct/space/SensorVelodyne3D.h"
 #include "obvision/reconstruct/space/TsdSpace.h"
 #include "sensor_velodyne3d/VelodyneTsdReconfigureConfig.h"
 #include <dynamic_reconfigure/server.h>
 #include <pcl_ros/point_cloud.h>
+#include <ros/ros.h>
 #include <tf/tf.h>
 #include <tf/transform_listener.h>
 
@@ -24,12 +25,13 @@ public:
   VelodyneTsd(const float dimX, const float dimY, const float dimZ, const float cellSize);
   virtual ~VelodyneTsd();
   void callbackPointCloud(const pcl::PointCloud<pcl::PointXYZ>& cloud);
-  void pubSensorRaycast(const pcl::PointCloud<pcl::PointXYZ>& currentLaserSceneData);
-  void matchScanToSpace(const pcl::PointCloud<pcl::PointXYZ>& currentLaserSceneData, const pcl::PointCloud<pcl::PointXYZ>& lastRaycastModelData);
+  bool pubSensorRaycast();
+  // void matchScanToSpace(const pcl::PointCloud<pcl::PointXYZ>& currentLaserSceneData, const pcl::PointCloud<pcl::PointXYZ>& lastRaycastModelData);
+  void renderSpace(pcl::PointCloud<pcl::PointXYZRGB>& cloud);
 
 private:
-  void init(const pcl::PointCloud<pcl::PointXYZ>& cloud);
-  void callbackDynReconf(sensor_velodyne3d::VelodyneTsdReconfigureConfig& config, uint32_t level);
+  void                               init(const pcl::PointCloud<pcl::PointXYZ>& cloud);
+  void                               callbackDynReconf(sensor_velodyne3d::VelodyneTsdReconfigureConfig& config, uint32_t level);
   std::unique_ptr<obvious::TsdSpace> _space;
 
   // Switch sensor class here
@@ -40,6 +42,7 @@ private:
   ros::NodeHandle                        _nh;
   ros::Subscriber                        _subPointCloud;
   ros::Publisher                         _pubSensorRaycast;
+  ros::Publisher                         _pubRenderedSpace;
   std::unique_ptr<tf::TransformListener> _listener;
   std::string                            _tfBaseFrame;
   float                                  _dimX;
@@ -50,6 +53,8 @@ private:
   unsigned int                           _cellsY;
   unsigned int                           _cellsZ;
   bool                                   _virginPush;
+  // pcl::PointCloud<pcl::PointXYZRGB>                                                _renderedSpace;
+  typedef std::vector<Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d> > stdVecEig3d;
 
   // for shift down test
   obvious::obfloat _centerspace[3];
